@@ -1,0 +1,299 @@
+
+<html>
+<!--<link rel="stylesheet" type="text/css" href="style.css" />-->
+<style>
+@import url(http://fonts.googleapis.com/css?family=Roboto:300,400,900);
+@import url(http://weloveiconfonts.com/api/?family=entypo);
+[class*="entypo-"]:before {
+  font-family: 'entypo', sans-serif;
+}
+* { 
+  box-sizing: border-box;
+  margin: 0;
+}
+body {
+  background: #BDC1C6;
+  font-family: 'Roboto';
+}
+p {
+  font-weight: 300;
+}
+.chat {
+  width: 400px;
+  background: #fff;
+  margin: 0 auto;
+}
+header {
+  background: #35323C;
+  height: 50px;
+  padding: 5px 10px;
+}
+.menu-icon {
+  background: #2F2E33;
+  padding: 5px 10px;
+  float: left;
+  font-size: 3em;
+  line-height: 0.5em;
+  color: #fff;
+  border-radius: 3px;
+}
+.menu-icon:hover {
+  background: #39caad;
+  cursor: pointer;
+}
+h1 {
+  float: right;
+  color: #fff;
+  margin: 5px;
+  font-weight: 300;
+  font-size: 1.3em;
+}
+.new {
+  background: rgb(57, 202, 173);
+  color: #fff;
+  text-align: center;
+  padding: 20px;
+}
+.new:hover {
+  cursor: pointer;
+  background: rgba(57, 202, 173, 0.9);
+}
+.messages {
+  padding: 10px;
+  max-height: 400px;
+  overflow-y:scroll;
+}
+.message {
+  float: left;
+  width: 100%;
+  margin: 10px 0;
+  border-bottom: 1px solid #ccc;
+}
+.message p {
+  font-size: 0.8em;
+  width: 90%;
+  margin: 5px 0;
+}
+img {
+  border-radius: 100%;
+  float: left;
+  margin: 0 10px 15px 0;
+}
+p.time {
+  color: rgba(0,0,0,0.5);
+  font-weight: 400;
+}
+h2 {
+  font-size: 1em;
+  font-weight: 400;
+}
+h2:after {
+  content: '';
+  display: inline-block;
+  height: 10px;
+  width: 10px;
+  background: #39caad;
+  border-radius: 100%;
+  margin-left: 5px;
+}
+footer {
+  width: 100%;
+  background: #fff;
+  padding: 10px;
+  text-align: center;
+  font-size: 0.8em;
+}
+footer p:before,
+footer p:after {
+  content: ' - ';
+}
+.Area
+{
+  margin:0 auto;
+  width:400px;
+  background-color:rgba(240, 240, 240, 0.2);
+  display:table;
+  padding:5px;
+  border-radius:5px;
+  margin-bottom:10px;
+}
+.header
+{
+  font-size:26px;
+  margin:0 auto;
+  text-align:center;
+  color:#9F6905;
+  font-weight:lighter;
+  background-color:#f0f0f0;
+  height:50px;
+  line-height:50px;
+  border-bottom:1px solid #9F6905;
+}
+.Area textarea
+{
+  font-size:12px;
+  width:100%;
+  max-width:100%;
+  min-width:90%;
+  padding:5%;
+  border-radius:5px;
+  border:1px solid #f0f0f1;
+  max-height:50px;
+  height:50px;
+  min-height:50px;
+  background-color:#333;
+  color:#fff;
+  outline:none;
+  border:1px solid transparent;
+  resize:none;
+}
+.Area textarea:focus
+{
+  color:#333;
+  border:1px solid #ccc;
+     -webkit-transition: all 1.5s;
+    -moz-transition: all 1.5s;
+    transition: all 1.5s;
+  background-color:#fff;
+}
+</style>
+    <body>
+        <div class="chat" >
+  <header>
+    <div class="menu-icon"><span class="entypo-menu"></span></div>
+    <h1 id="connection">Chats</h1>
+  </header>
+  <div class="new">
+    <p><span class="entypo-feather"></span>Tante & Om </p>
+  </div>
+  <section class="messages" id="idchat">
+    <!--<div class="message">-->
+      <!--<img src="http://www.placecage.com/70/70"/>-->
+      <!--<h2>Tante & Om</h2>-->
+      <!--<p>...</p>-->
+      <!--<p class="time"><span class="entypo-clock"></span> 5 mins ago</p>-->
+    <!--</div>-->
+          </section>
+      <footer><p></p></footer>
+</div>
+   <div class="Area">
+    <textarea placeholder="Your Name"  id="nameText"></textarea>
+    <textarea placeholder="Participate in coversation"   id="messText"></textarea>
+      <br/><br/>
+      <br/>
+  </div>
+    
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script type="text/javascript">
+        var nameField="No name";
+        var stopInterval=false;
+        var wsUri = "ws://ec2-52-10-52-79.us-west-2.compute.amazonaws.com:8080/ChatWebSocket-1.0-SNAPSHOT/chatendpoint";
+        var websocket = new WebSocket(wsUri);
+        var messageHeight=0;
+        var messageCount=0;
+         websocket.onmessage = function(evt) { onMessage(evt) };
+         function onMessage(evt) {
+             console.log("received: " + evt.data);
+             var msg=JSON.parse(evt.data)
+             if(msg.hasOwnProperty('TimeStamp')){
+
+                 console.log("retrieve data do something"); 
+             }
+             else{
+                 newMessage(msg);
+             }
+}
+         function newMessage(msg) {
+
+             //to get message to be appended
+             messageCount+=1;
+             var idmessage="nowMessage";
+             var id=idmessage.concat(messageCount.toString()); 
+             var wrap0='<div class="message" id=';
+             var wrap1=wrap0.concat("'",id,"'","><h2>"); 
+             var wrap2='</h2> <p>'; 
+             var wrap3='</p></div>';
+             var nameID=msg.name;
+             var messageContent=msg.chat;
+             var all=wrap1.concat(nameID,wrap2,messageContent,wrap3); 
+             //----
+
+             //get identifier of message
+             var idm1='#';
+             var idm2=idm1.concat(id);
+             //append to messages
+             $("#idchat").append(all);
+             //get total height of messages
+             messageHeight+=$(idm2).height(); 
+             //scroll title
+             if(nameID!=nameField){
+                 scrolltitle(); 
+             }
+             $('#idchat').scrollTop(messageHeight); 
+           }
+        function onTextChange(){
+            var key = window.event.keyCode;
+            // If the user has pressed enter
+            if (key == 13) {
+                console.log("press"); 
+                sendText(); 
+                $("#messText").val("").focus(); 
+//                $("#messText").css("height","50px"); 
+                return false; 
+            }
+        }
+        $("#nameText").keydown(function(e){
+                 nameField=$(this).val();
+        });
+        $("#messText").keydown(function(e){
+             stopTitle(); 
+             if (e.keyCode === 13) {
+                 var json = JSON.stringify({
+                "name": nameField,       
+                "chat": $(this).val()
+                });
+                 console.log("sending text: " + json);
+                 websocket.send(json);
+                 $(this).val('').focus();    
+             return false;
+             }   
+        }); 
+        websocket.onerror = function(evt) { onError(evt) };
+        function onError(evt) {
+        }
+        websocket.onopen = function(evt) { onOpen(evt) };
+        function onOpen() {
+            console.log("conected"); 
+            $("#connection").html("Connected"); 
+        }
+        function flashTitle(pageTitle, newMessageTitle)
+        {
+            if (document.title == pageTitle)
+            {
+                document.title = newMessageTitle;
+            }
+            else
+            {
+                document.title = pageTitle;
+            }
+            if(stopInterval){
+                window.clearInterval(intervalListerner); 
+            }
+        }
+        var msg="Lagi chattingan sama jodoh ya,....., dibuka donk,......"; 
+        var myTitle="Ayo ayo ayo"; 
+        var position=0;
+        var myTimeout;
+        document.title=myTitle; 
+        function scrolltitle() {
+            document.title = msg.substring(position, msg.length) + msg.substring(0, position); position++;
+            if (position > msg.length) position = 0
+            myTimeout=window.setTimeout("scrolltitle()",170);
+        }
+        function stopTitle(){
+            clearTimeout(myTimeout);
+            document.title= myTitle; 
+        }
+        </script>
+</body>
+</html>

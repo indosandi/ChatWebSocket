@@ -1,0 +1,5 @@
+org/kmbmicro/chatwebsocket/ChatRecBc.class
+org/kmbmicro/chatwebsocket/DbString.class
+org/kmbmicro/chatwebsocket/ChatData.class
+org/kmbmicro/chatwebsocket/ChatDecoder.class
+org/kmbmicro/chatwebsocket/ChatEncoder.class
