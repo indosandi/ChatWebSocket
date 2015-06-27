@@ -1,5 +1,5 @@
 # ChatWebSocket
-Chat Application using websocket technology
+Chat Application using websocket technology written in Java and javascript
 
 1. Server
 Websocket endpoint run in glassfish server. Server receive JSON (string) data from client. The data is converted into class ChatData
